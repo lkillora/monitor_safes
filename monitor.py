@@ -52,12 +52,16 @@ def detect_new_txs():
     )
     check_interval = 1
 
-    safes = [
-        '0xfef30c262676de9af5e5e9ba999cf774000b14b4',
-        '0xee7f7f53f0d0c8c56a38e97c5a58e4d321a174dc',
-        '0xf32e3596f555546acc4ad6ef67e1abf36b134748',
-        '0x5be9a4959308a0d0c7bc0870e319314d8d957dbb',
-    ]
+    safes = {
+        '0xfef30c262676de9af5e5e9ba999cf774000b14b4': 'eth',
+        '0xee7f7f53f0d0c8c56a38e97c5a58e4d321a174dc': 'eth',
+        '0xf32e3596f555546acc4ad6ef67e1abf36b134748': 'eth',
+        '0x5be9a4959308a0d0c7bc0870e319314d8d957dbb': 'eth',
+        '0x000000000000000000000000000000000A11B004': 'plasma',
+        '0x000000000000000000000000000000000A11b001': 'plasma',
+        '0x000000000000000000000000000000000A11b002': 'plasma',
+        '0x000000000000000000000000000000000a11b003': 'plasma',
+    }
     seen_hashes = []
 
     for safe in safes:
@@ -77,7 +81,8 @@ def detect_new_txs():
                 result = ''
                 for t in unexecuted_txs:
                     if t not in seen_hashes:
-                        link = f'https://app.safe.global/transactions/tx?safe=eth:{safe}&id=multisig_{safe}_{t}'
+                        chain = safes[safe]
+                        link = f'https://app.safe.global/transactions/tx?safe={chain}:{safe}&id=multisig_{safe}_{t}'
                         send_pushover_alert(f'New safe tx: {link}', priority=2)
                         seen_hashes.append(t)
                         result += f'new tx {t}'
